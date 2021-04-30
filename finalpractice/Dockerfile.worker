@@ -1,0 +1,9 @@
+FROM python:3.6.13
+
+RUN pip3 install hotqueue==0.2.8 \
+                 redis==3.5.3
+
+COPY ./source/worker.py /app/
+WORKDIR /app
+
+CMD ["python","/app/worker.py"]
