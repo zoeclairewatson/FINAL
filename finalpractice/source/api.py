@@ -1,5 +1,7 @@
 import json
 from flask import Flask, request
+#from hotqueue import HotQueue
+#from redis import StrictRedis
 import jobs
 import os
 import uuid
@@ -11,6 +13,7 @@ redis_ip = "testingfinal_redis_2"#os.environ.get('REDIS_IP')
 if not redis_ip:
     raise Exception()
 rd=redis.StrictRedis(host=redis_ip, port=6379, db=3)
+#q = HotQueue('queue', host=redis_ip, port=6379, db=1)
 
 @app.route('/helloWorld',methods=['GET'])
 def hello_world():

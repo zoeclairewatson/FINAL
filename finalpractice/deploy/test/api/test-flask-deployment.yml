@@ -22,7 +22,7 @@ spec:
         - name: kz-test-api
           imagePullPolicy: Always
           image: zoeclairewatson/practicingapp-api:1.0
-          command: ["python", "api.py"]
+          #command: ["python", "api.py"]
           env:
           - name: FLASK_APP
             value: "api.py"

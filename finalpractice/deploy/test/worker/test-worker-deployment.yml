@@ -22,11 +22,11 @@ spec:
         - name: kz-test-worker
           imagePullPolicy: Always
           image: zoeclairewatson/practicingapp-worker:1.0
-          command: ["python", "worker.py"]
+          #command: ["python", "worker.py"]
           env:
           - name: WORKER_IP
             valueFrom:
               fieldRef:
                 fieldPath: status.podIP
           #- name: REDIS_IP
-          #  value: ""          
+          #   value: ""          

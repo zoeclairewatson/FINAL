@@ -2,6 +2,10 @@ import uuid
 from hotqueue import HotQueue
 from redis import StrictRedis
 
+redis_ip = "testingfinal_redis_2"#os.environ.get('REDIS_IP')
+if not redis_ip:
+    raise Exception()
+
 q = HotQueue("queue", host="testingfinal_redis_2", port=6379, db=1)
 rd = redis.StrictRedis(host="testingfinal_redis_2", port=6379, db=0)
 
@@ -40,12 +44,16 @@ def add_job(start, end, status="submitted"):
     _queue_job(jid)
     return job_dict
 
-def update_job_status(jid, status):
+def update_job_status(jid, new_status):
     
     jid, status, start, end = rd.hmget(generate_job_key(jid), 'id', 'status', 'start', 'end')
     job = _instantiate_job(jid, status, start, end)
+    worker_ip = os.environ.get('WORKER_IP')
+
     if job:
-        job['status'] = status
+        job['status'] = new_status
+        if new_status == 'in progress':
+            job['worker IP'] = worker_ip
         _save_job(_generate_job_key(jid), job)
     else:
         raise Exception()
