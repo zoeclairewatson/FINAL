@@ -23,7 +23,7 @@ spec:
           imagePullPolicy: Always
           image: zoeclairewatson/final:latest
           #command: ["sleep", "99999999999999999999999999999999"]
-          command: ["python333333333333333333333333333333333", "api.py"]
+          command: ["python", "api.py"]
           env:
           - name: FLASK_APP
             value: "api.py"

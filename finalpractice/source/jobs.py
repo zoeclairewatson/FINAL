@@ -18,7 +18,7 @@ rd1=redis.StrictRedis(host=redis_ip, port=6379, db=3) #raw data db
 def _get_data():
     animal_data = []
     
-    for i in range(2269):
+    for i in range(rd1.dbsize()-1):
         animal = {}
         animal['Animal_ID'] = str(rd1.hget(i,'Animal_ID'))[1:]
         animal['Name'] = str(rd1.hget(i,'Name'))[1:]
@@ -84,9 +84,6 @@ def get_job_data(jid):
     job_dict = _instantiate_job(jid, status, job_type, start, end)
     return job_dict
 
-def get_result(jid):
-    return rd2.hgetall(_generate_job_key(jid))
-
 def update_job_status(jid, new_status):
     
     jid, status, job_type, start, end = rd.hmget(_generate_job_key(jid), 'id', 'status', 'job_type', 'start', 'end')
@@ -97,6 +94,6 @@ def update_job_status(jid, new_status):
         job['status'] = new_status
         if new_status == 'in progress':
             job['worker IP'] = worker_ip
-        _save_job(_generate_job_key(job['id'], job)
+        _save_job(_generate_job_key(job['id']), job)
     else:
         raise Exception()

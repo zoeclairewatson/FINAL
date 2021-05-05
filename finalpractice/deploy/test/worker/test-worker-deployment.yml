@@ -23,7 +23,7 @@ spec:
           imagePullPolicy: Always
           image: zoeclairewatson/final:latest
           #command: ["sleep","9999"]
-          command: ["python3", "worker.py"]
+          command: ["python", "worker.py"]
           env:
           - name: WORKER_IP
             valueFrom:
