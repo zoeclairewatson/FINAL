@@ -21,13 +21,14 @@ spec:
       containers:
         - name: kz-test-api
           imagePullPolicy: Always
-          image: zoeclairewatson/practicingapp-api:1.0
-          #command: ["python", "api.py"]
+          image: zoeclairewatson/final:latest
+          #command: ["sleep", "99999999999999999999999999999999"]
+          command: ["python333333333333333333333333333333333", "api.py"]
           env:
           - name: FLASK_APP
             value: "api.py"
-          #- name: REDIS_IP
-          #  value: ""
+          - name: REDIS_IP
+            value: "10.111.113.252"
           ports:
           - name: http
             containerPort: 5000

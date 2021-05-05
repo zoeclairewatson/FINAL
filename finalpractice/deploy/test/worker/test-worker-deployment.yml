@@ -21,12 +21,13 @@ spec:
       containers:
         - name: kz-test-worker
           imagePullPolicy: Always
-          image: zoeclairewatson/practicingapp-worker:1.0
-          #command: ["python", "worker.py"]
+          image: zoeclairewatson/final:latest
+          #command: ["sleep","9999"]
+          command: ["python3", "worker.py"]
           env:
           - name: WORKER_IP
             valueFrom:
               fieldRef:
                 fieldPath: status.podIP
-          #- name: REDIS_IP
-          #   value: ""          
+          - name: REDIS_IP
+            value: "10.111.113.252"          
