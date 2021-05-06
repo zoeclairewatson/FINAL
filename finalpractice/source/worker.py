@@ -11,7 +11,7 @@ def execute_job(jid):
 
     job_type = jobs.get_job_type(jid)
 
-    jobs.update_job_status(jid, 'in progress')
+    jobs.update_job_status(jid, job_type)#'in progress')
    
  
     #analysis: plot total number of outcomes for each day in date range
@@ -37,16 +37,16 @@ def execute_job(jid):
 
         #format to check for full day, rather than specific time??????????
         for key in rd1.keys():
-
+            
             key_time_temp = key['Date_of_Entry'].decode(utf-8).replace("'","")
             key_time = datetime.datetime.strptime(key_time_temp, '%m/%d/%Y %H:%M')
-
+            jobs.update_job_status(jid, str(key_time) # -------------------
             #check for keys in date range
             if (start <= key_time <= end):
 
                 #set specific date
                 x = key['Date_of_Entry']
-
+                #jobs.update_job_status(jid, str(x))                       -----------
                 #check if date is alread in x_values_to_plot
                 if x not in x_values_to_plot:
 
@@ -82,16 +82,18 @@ def execute_job(jid):
         rd.hset(f'job.{jid}', 'result', img)
         #rd.hset(jobid, 'image', img)        
 
+        #jobs.update_job_status(jid, 'complete')
 
     #analysis: plot total # of outcomes by type of animal in date range
     if (job_type == 'animal_type'):
-    
+        #jobs.update_job_status(jid, 'it has entered the for loop')
         animal_types = ['Bird', 'Cat', 'Dog', 'Livestock', 'Other']
         animal_counts = [0, 0, 0, 0, 0]
 
         for key in rd1.keys():
-
-            this_animal_type = str(key['Animal_Type'])[1:]
+            #jobs.update_job_status(jid, str(key))#'it has entered the for loop')
+            this_animal_type = str(rd1.hget(key, 'Animal_Type'))[1:]
+            #jobs.update_job_status(jid, str(this_animal_type))
             if this_animal_type == "'Bird'":
                 animal_counts[0] += 1
             elif this_animal_type == "'Cat'":
@@ -102,7 +104,7 @@ def execute_job(jid):
                 animal_counts[3] += 1
             elif this_animal_type == "'Other'":
                 animal_counts[4] += 1
-
+        #jobs.update_job_status(jid, str(animal_counts))
         plt.clf()
         plt.bar(animal_types, animal_counts, color='green')
         plt.xlabel('Animal Type')
@@ -113,9 +115,10 @@ def execute_job(jid):
         with open('/outcomes_by_animal_type.png', 'rb') as f:
             img = f.read()
 
+        #rd.hset("job.{}".format(jid), 'image' img)
         rd.hset(f'job.{jid}', 'result', img)
 
              
-    jobs.update_job_status(jid, 'complete')
+        jobs.update_job_status(jid, 'complete')
 
 execute_job()

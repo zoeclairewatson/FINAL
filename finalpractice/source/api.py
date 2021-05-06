@@ -1,5 +1,5 @@
 import json
-from flask import Flask, request
+from flask import Flask, request, send_file
 from hotqueue import HotQueue
 import redis
 import jobs
@@ -18,7 +18,7 @@ def hello_world():
 def load():
     load_data()
     return "You have loaded the data set from the json file!"
-
+    #return str(rd1.hgetall(1))
 def load_data():
     with open("/app/animal_center_data_file.json","r") as json_file:
         animal_data = json.load(json_file)
@@ -39,6 +39,7 @@ def load_data():
         
         rd1.hmset(i,{'Animal_ID': animal_id,'Name':name,'Date_of_Entry':date_of_entry,'Date_of_Birth': date_of_birth, 'Outcome_Type': outcome_type,'Outcome_Subtype': outcome_subtype,'Animal_Type': animal_type, 'Sex':sex, 'Age':age, 'Breed': breed, 'Color':color})
         i = i+1
+        
 
 def get_data():
     animal_data = []
@@ -102,36 +103,32 @@ def add_animal():
 """
    
 # UPDATE route
-#@app.route('/update_animal', methods=['GET', 'POST'])
-#def update_animal():
-#    if request.method == 'POST':
-#        animalid = str(request.args.get('Animal_ID'))
-#        field_to_update = request.args.keys() # joe look this up
-
-#        for key in rd1.keys():
-#            if rd1.hget(key, 'Animal_ID') == animalid:
-#                rd1.hset(key, field_to_update, value_to_update)
-
-
 @app.route('/update_animal', methods=['GET', 'POST'])
 def update_animal():
     if request.method == 'POST':
+        #get Animal_ID, the only required query parameter
         animalid = str(request.args.get('Animal_ID'))
-        animaltype = str(request.args.get('Animal_Type')).replace('"','')
-        test = get_data()
-        animal = [x for x in test if x['Animal_ID'] == animalid]
-        rd1.hset(test.index(animal[0]),'Animal_Type',animaltype)
-        #field_to_update = request.form['Field_to_Update']
-        #for k in request.args.keys():
-        #    if k != "'Animal_ID'":
-        #        field_to_update = k
-        #        value_to_update = str(request.args.get(field_to_update)).replace("'","")
-        #value_to_update = request.form['Value_to_Update']
-        #        for key in rd1.keys():
-        #            if rd1.hget(key, 'Animal_ID') == animalid:
-        #                rd1.hset(key, field_to_update, value_to_update)
-
-        return "You have edited animal "+animalid
+        #raise exception if user does not provide Animal_ID
+        if not animalid:
+            raise Exception('Animal_ID must be one of the query parameters')
+        #iterate over all keys in raw data db
+        for key in rd1.keys():
+            #return "checking for animal id match"
+            #find animal that matches the Animal_ID parameter
+            if str(rd1.hget(key, 'Animal_ID'))[1:] == "'"+animalid+"'":
+                #return "found animal match"                
+                #iterate over all field:value pairs passed in the query string
+                for field, value in request.args.items():
+                    
+                    #skip the Animal_ID field
+                    if field == 'Animal_ID':
+                        pass
+                    #update the database for any other field that is passed in the query 
+                    else:
+                        rd1.hset(key, field, value)
+                return "You have edited animal "+animalid
+        else:
+            return "cannot find animal"
 
     else:
         return """
@@ -144,7 +141,7 @@ def update_animal():
 """
 
 # DELETE route
-@app.route('/delete_animal', methods=['DELETE'])
+@app.route('/delete_animal', methods=['GET', 'DELETE'])
 def delete_animal():
     if request.method == 'DELETE':
         animalid = request.args.get('Animal_ID')
@@ -153,17 +150,33 @@ def delete_animal():
         rd1.delete(test.index(animal[0]))
         return "You have deleted animal "+animalid
 
+    else:
+        return """
 
-@app.route('/jobs', methods=['POST'])
+    Try a curl command like:
+
+    curl -X DELETE localhost:5000/delete_animal?Animal_ID='A643424'
+
+"""
+
+
+@app.route('/jobs', methods=['GET', 'POST'])
 def jobs_api():
-    try:
-        job = request.get_json(force=True)
-    except Exception as e:
-        return True, json.dumps({'status': "Error", 'message': 'Invalid JSON: {}.'.format(e)})
-    return json.dumps(jobs.add_job(job['start'], job['end']))
+    if request.method == 'POST':
+        try:
+            job = request.get_json(force=True)
+        except Exception as e:
+            return True, json.dumps({'status': "Error", 'message': 'Invalid JSON: {}.'.format(e)})
+        return json.dumps(jobs.add_job(job['job_type'],job['start'], job['end']))
 
-    # user should do a curl request like:
-    # curl ip_address:5000/jobs -X POST -H "content-type: application/json" -d '{"start": "9/26/2018", "end": "9/26/2019"}'
+    else:
+        return """
+
+    Try a curl command like:
+
+    curl -X POST -H "content-type: application/json" -d '{"job_type": "dates", "start": "6/17/2019", "end": "6/17/2020"}' localhost:5000/jobs
+
+"""
 
 @app.route('/download/<jobid>', methods=['GET'])
 def download(jobid):
@@ -172,6 +185,7 @@ def download(jobid):
         f.write(rd.hget(jobid, 'image'))
     return send_file(path, mimetype='image/png', as_attachment=True)
 
+#curl localhost:5000/download/<jobid> >outcome.png
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
