@@ -5,19 +5,15 @@ Once everything has been deployed, you want to first find the IP address of the 
 
 To do this you call the command below:
 ```
-kubectl get pods -o wide
+[zcw268@isp02 finalpractice]$ kubectl get services --selector "app=kz-test-redis"
+
 ```
-It should return something like this
+It should look something like this for the output:
 ```
-NAME                                              READY   STATUS        RESTARTS   AGE     IP              NODE                         NOMINATED NODE   READINESS GATES
-kz-test-flask-deployment-54956584f6-4565k         1/1     Running       0          37s     10.244.4.53     c02                          <none>           <none>
-kz-test-pvc-deployment-5c9c566dc4-gn8lt           1/1     Running       0          23m     10.244.13.235   c11                          <none>           <none>
-kz-test-worker-deployment-569b877574-thsxl        1/1     Running       0          20s     10.244.4.54     c02                          <none>           <none>
-py-debug-deployment-5cc8cdd65f-gkwnt              1/1     Running       0          24d     10.244.4.206    c02                          <none>           <none>
-redis-client-debug-deployment-5f88f47c96-2d66j    1/1     Running       0          14d     10.244.4.230    c02                          <none>           <none>
-redis-client-debug-deployment-5f88f47c96-lghcb    1/1     Running       0          14d     10.244.10.130   c009.rodeo.tacc.utexas.edu   <none>           <none>
+NAME                                        READY   STATUS    RESTARTS   AGE   IP             NODE                         NOMINATED NODE   READINESS GATES
+kz-prod-flask-deployment-5ff8f4df6b-g5mkp   1/1     Running   0          19m   10.244.10.77   c009.rodeo.tacc.utexas.edu   <none>           <none>
 ```
-In this example output the IP address would be 10.244.4.53.
+In this example output the IP address would be 10.244.10.77.
 
 Now you are going to want to exec into the python debugger deployment. Here is the general command
 ```
