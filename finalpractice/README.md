@@ -11,8 +11,8 @@ This project is a API using Kubernetes for a database that includes data from Au
 {
      "Animal ID": "A705283",
      "Name": "",
-     "DateTime": "6/16/2015 9:00",
-     "Date of Birth": "6/15/2014",
+     "DateTime": "6-16-2015 9:00",
+     "Date of Birth": "6-15-2014",
      "Outcome Type": "Transfer",
      "Outcome Subtype": "SCRP",
      "Animal Type": "Cat",
