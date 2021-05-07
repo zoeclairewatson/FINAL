@@ -15,13 +15,23 @@ kz-prod-flask-deployment-5ff8f4df6b-g5mkp   1/1     Running   0          19m   1
 ```
 In this example output the IP address would be 10.244.10.77.
 
+Next you need the name of the python debugger deployment. Here is the command:
+```bash
+kubectl get pods --selector "app=py-app"
+```
+Here is some example output:
+```bash
+NAME                                   READY   STATUS    RESTARTS   AGE
+py-debug-deployment-5cc8cdd65f-c22z8   1/1     Running   0          35d
+```
+
 Now you are going to want to exec into the python debugger deployment. Here is the general command
 ```bash
 kubectl exec -it <python-debugger-deployment-name-here> -- /bin/bash
 ```
 For the example output it would be:
 ```bash
-kubectl exec -it py-debug-deployment-5cc8cdd65f-gkwnt -- /bin/bash
+kubectl exec -it py-debug-deployment-5cc8cdd65f-c22z8 -- /bin/bash
 ```
 
 Once you are inside the python debugger you are first going to want to install vim. This will be useful for the create route later. Here are the commands:
@@ -37,7 +47,7 @@ curl <flask_IP>:5000/helloWorld
 ```
 For the example output above, the line would be:
 ```bash
-curl 10.244.4.54:5000/helloWorld
+curl 10.244.10.77:5000/helloWorld
 ```
 It should print out the following:
 ```bash
