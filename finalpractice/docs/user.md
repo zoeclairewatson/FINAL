@@ -232,4 +232,4 @@ https://isp-proxy.tacc.utexas.edu/<user-namespace>/download/job.<jid>
 ```
 This will automatically download the png for the graphs. You can then open them in any image viewer program on your desktop. 
 Here is an example of what they should look like:
-
+![alt text](https://github.com/zoeclairewatson/FINAL/blob/main/finalpractice/docs/image.png?raw=true)
