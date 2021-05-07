@@ -31,7 +31,12 @@ kubectl apply -f test-redis-service.yml
 Now that the Redis Service has been created, there are manual changes that need to be executed within the api and worker deployments to update the Redis Service IP. First, check the Redis service Cluster-IP using:
 
 ```bash
-kubectl get services -- selector "username=kz"
+kubectl get services --selector "app=kz-test-redis"
+```
+Here is a sample output:
+```bash
+NAME                    TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
+kz-test-redis-service   ClusterIP   10.111.113.252   <none>        6379/TCP   2d13h
 ```
 
 Change to api directory and update the flask deployment yml file to use this Redis service IP:
