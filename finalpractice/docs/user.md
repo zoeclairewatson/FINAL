@@ -209,4 +209,27 @@ root@py-debug-deployment-5cc8cdd65f-c22z8:/# curl 10.244.10.88:5000/jobs
     Try a curl command like:
     curl -X POST -H "content-type: application/json" -d '{"job_type": "dates", "start": "6/17/2019", "end": "6/17/2020"}' localhost:5000/jobs
 ```
-Now to actually send a job. There are 2 job types, or 2 types of analysis. animal_type and dates. animal_type gives a bar graph showing the number of each type of animal in the entire dataset. dates gives you 
+Now to actually send a job. There are 2 job types, or 2 types of analysis. animal_type and dates. animal_type gives a bar graph showing the number of each type of animal in the entire dataset. dates gives you how many outcomes happen per day given a date range (intended to track productivity of the centers on a given date range).
+For the animal_type job the values you give start and end will not matter
+Here is the general example route for a job:
+```bash
+curl -X POST -H "content-type: application/json" -d '{"job_type": "<job_type>", "start": "<start_date>", "end": "<end_date>"}'
+```
+Here is the example of the post route for the dates job type with output:
+```bash
+root@py-debug-deployment-5cc8cdd65f-c22z8:/# curl -X POST -H "content-type: application/json" -d '{"job_type": "dates", "start": "6-17-2018", "end": "6-27-2018"}' 10.244.10.88:5000/jobs
+{"id": "27fc9d8a-0ea9-4e1a-bf97-a9f20e8a0b77", "status": "submitted", "job_type": "dates", "start": "6-17-2018", "end": "6-27-2018"}
+```
+Here is an example of the post route for the animal_type job type with output:
+```bash 
+root@py-debug-deployment-5cc8cdd65f-c22z8:/# curl -X POST -H "content-type: application/json" -d '{"job_type": "animal_type", "start": "6-17-2018", "end": "6-27-2018"}' 10.244.10.88:5000/jobs
+{"id": "da444892-1372-4357-8a94-3c8f5f21a773", "status": "submitted", "job_type": "animal_type", "start": "6-17-2018", "end": "6-27-2018"}
+```
+
+Now to view the graphs from the jobs. To do this you will use a browser UI. Open up a broswer and in the url bar type in:
+```
+https://isp-proxy.tacc.utexas.edu/<user-namespace>/download/job.<jid>
+```
+This will automatically download the png for the graphs. You can then open them in any image viewer program on your desktop. 
+Here is an example of what they should look like:
+
