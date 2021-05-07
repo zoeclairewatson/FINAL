@@ -169,21 +169,44 @@ curl -X POST "<flask_IP>:5000/update_animal?Animal_ID=<animal_id>&Name=<name>&Da
 ***DO NOT MAKE YOUR ANIMAL TYPE ANYTHING OTHER THAN CAT,DOG,BIRD,LIVESTOCK,OTHER IT WILL MESS UP THE ANALYSIS IF YOU DO***
 Here is an example with output:
 ```bash
-root@py-debug-deployment-5cc8cdd65f-c22z8:/# curl -X POST "10.244.10.88:5000/update_animal?Animal_ID=A643424&Name=Boomer&Date_of_Entry=5-5-2021&Date_of_Birth=5-5-
-2020&Outcome_Type=IDK&Outcome_Subtype=WOW&Animal_Type=Other&Sex=Female&Age=old&Breed=Whale&Color=Blue"
+root@py-debug-deployment-5cc8cdd65f-c22z8:/# curl -X POST "10.244.10.88:5000/update_animal?Animal_ID=A643424&Name=Boomer&Date_of_Entry=5-5-2021&Date_of_Birth=5-5-2020&Outcome_Type=IDK&Outcome_Subtype=WOW&Animal_Type=Other&Sex=Female&Age=old&Breed=Whale&Color=Blue"
 You have edited animal A643424
 ```
 Here is an example with output checking to see that it is updated:
 ```bash
-root@py-debug-deployment-5cc8cdd65f-c22z8:/# curl 10.244.10.88:5000/get_animal?Animal_ID=A643424
-[{"Animal_ID": "'A643424'", "Name": "'Boomer'", "Date_of_Entry": "'5-5-2021'", "Date_of_Birth": "'5-5-2020'", "Outcome_Type": "'IDK'", "Outcome_Subtype": "'WOW'", "Animal_Type": "'Other'", "Sex": "'Female'", "Age": "'old'", "Breed": "'Whale'", "Color": "'Blue'"}]
+root@py-debug-deployment-5cc8cdd65f-c22z8:/# curl 10.244.10.88:5000/get_animal?Animal_ID=A643424[{"Animal_ID": "'A643424'", "Name": "'Boomer'", "Date_of_Entry": "'5-5-2021'", "Date_of_Birth": "'5-5-2020'", "Outcome_Type": "'IDK'", "Outcome_Subtype": "'WOW'", "Animal_Type": "'Other'", "Sex": "'Female'", "Age": "'old'", "Breed": "'Whale'", "Color": "'Blue'"}]
 ```
 
 Next let's look at how to delete an animal. To delete an animal provide the Animal ID. There is a get method route that can give you the format of the curl.
 Here is a general example route:
 ```bash
+curl <flask_IP>:5000/delete_animal
+```
+Here is an example with output:
+```bash
 root@py-debug-deployment-5cc8cdd65f-c22z8:/# curl 10.244.10.88:5000/delete_animal
     Try a curl command like:
     curl -X DELETE localhost:5000/delete_animal?Animal_ID=A643424
 ```
+Here is the general example route to actually delete the animal:
+```bash
+curl -X DELETE <flask_IP>:5000/delete_animal?Animal_ID=<animal_id>
+```
+Here is an example of that with output:
+```
+root@py-debug-deployment-5cc8cdd65f-c22z8:/# curl -X DELETE 10.244.10.88:5000/delete_animal?Animal_ID=A643424
+You have deleted animal A643424
+```
 
+Lastly, let us look at how to do jobs. There is a get method route that can give you the format of the curl.
+Here is the general example route:
+```bash
+curl <flask_IP>:5000/jobs
+```
+Here is the example of the get route with output:
+```bash
+root@py-debug-deployment-5cc8cdd65f-c22z8:/# curl 10.244.10.88:5000/jobs
+    Try a curl command like:
+    curl -X POST -H "content-type: application/json" -d '{"job_type": "dates", "start": "6/17/2019", "end": "6/17/2020"}' localhost:5000/jobs
+```
+Now to actually send a job. There are 2 job types, or 2 types of analysis. animal_type and dates. animal_type gives a bar graph showing the number of each type of animal in the entire dataset. dates gives you 
